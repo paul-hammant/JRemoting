@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<head>
+<title>JRemoting Streams</title>
+<style type="text/css">
+<!--
+.nav {
+	background-color: #EAEAEA;
+    vertical-align: top;
+	width: 80px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+.cont {
+	vertical-align: top;
+	width: 100%;
+	padding-left: 15px;
+}
+-->
+</style>
+</head>
+<body>
+<table>
+<tr>
+<td class="nav">
+  <div id="leftColumn">
+    <div id="navColumn">
+		<h2>About</h2>
+		<ul>
+		   		  <li class="none"><a href="index.html">Overview</a></li>
+		    		  <li class="none"><a href="news.html">News</a></li>
+		    		  <li class="none"><a href="team.html">Team</a></li>
+		    		  <li class="none"><a href="facades.html">Facades</a></li>
+		    		  <li class="none"><a href="rmi.html">RMI</a></li>
+		   
+		</ul>
+		<h2>Pluggable Design</h2>
+		<ul>
+		   
+		  <li class="none"><strong>Streams</strong></li>
+  		  <li class="none"><a href="transports.html">Transports</a></li>
+		    		  <li class="none"><a href="stubs.html">Stubs</a></li>
+		    		  <li class="none"><a href="monitors.html">Monitors</a></li>
+		    		  <li class="none"><a href="pingers.html">Pingers</a></li>
+		   
+		</ul>
+		<h2>Reports</h2>
+		<ul>
+		  
+		</ul>
+    </div>
+  </div>
+</td>
+<td class="cont">
+<img src="images/jremoting-logo.jpg" width="" height="" alt="" style="float: right" />
+<h1>Streams</h1>
+
+  <p>Steams are how the RPC is encoded over the wire. JRemoting has
+  three implementations -&nbsp;ByteStream, ObjectStream and
+  XmlStream. &nbsp;</p>
+
+  <p>ByteStream is the default and slightly faster on the wire than
+  ObjectStream. &nbsp;Both are binary encodings. &nbsp;XmlStream
+  leverages <a href="http://xstream.codehaus.org/">XStream</a> for
+  an encoding that is text based.<br /></p>
+
+  <p style="font-weight: bold;">Server side usage</p>
+
+  <div class="source">
+    <pre>
+server = new SocketServer(new ConsoleServerMonitor(),
+                          new <span style=
+"font-weight: bold;">ByteStream</span>(), 
+                          new InetSocketAddress(10333));
+</pre>
+  </div>
+
+  <p style="font-weight: bold;">Client side usage</p>
+
+  <div class="source">
+    <pre>
+serviceResolver = new ServiceResolver(new SocketTransport(new ConsoleClientMonitor(), 
+                                                         new <span style="font-weight: bold;">ByteStream</span>(), 
+                                                         new InetSocketAddress("localhost", 10333)))
+</pre>
+  </div>To use either of XmlStream or ObjectStream, use them in
+  place of ByteStream (as above) when setting up the client and
+  server sides. &nbsp;<br />
+  <br />
+  Encodings mush be matched, of course, on both sides to work at
+  all. &nbsp;JRemoting will fail, not necessarily quickly or
+  clearly when you've mismatched encodings.<br />
+  <br />
+  <br />
+
+  <h3>&nbsp;</h3>
+
+</td>
+</tr>
+</table>
+</body>
+</html>

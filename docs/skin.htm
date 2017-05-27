@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<head>
+<title>JRemoting ${title}</title>
+<style type="text/css">
+<!--
+.nav {
+	background-color: #EAEAEA;
+    vertical-align: top;
+	width: 80px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+.cont {
+	vertical-align: top;
+	width: 100%;
+	padding-left: 15px;
+}
+-->
+</style>
+</head>
+<body>
+<table>
+<tr>
+<td class="nav">
+  <div id="leftColumn">
+    <div id="navColumn">
+		<#list sitemap.sections as section>
+		<h2>${section.name}</h2>
+		<ul>
+		  <#list section.pages as otherPage> <#if otherPage = page>
+		  <li class="none"><strong>${otherPage.title}</strong></li>
+		  <#else>
+		  <li class="none"><a href="${otherPage.href}">${otherPage.title}</a></li>
+		  </#if> </#list>
+		</ul>
+		</#list>
+    </div>
+  </div>
+</td>
+<td class="cont">
+<img src="images/jremoting-logo.jpg" width="" height="" alt="" style="float: right" />
+<h1>${title}</h1>
+${body}
+</td>
+</tr>
+</table>
+</body>
+</html>

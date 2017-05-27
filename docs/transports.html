@@ -1,0 +1,268 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<head>
+<title>JRemoting Transports</title>
+<style type="text/css">
+<!--
+.nav {
+	background-color: #EAEAEA;
+    vertical-align: top;
+	width: 80px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+.cont {
+	vertical-align: top;
+	width: 100%;
+	padding-left: 15px;
+}
+-->
+</style>
+</head>
+<body>
+<table>
+<tr>
+<td class="nav">
+  <div id="leftColumn">
+    <div id="navColumn">
+		<h2>About</h2>
+		<ul>
+		   		  <li class="none"><a href="index.html">Overview</a></li>
+		    		  <li class="none"><a href="news.html">News</a></li>
+		    		  <li class="none"><a href="team.html">Team</a></li>
+		    		  <li class="none"><a href="facades.html">Facades</a></li>
+		    		  <li class="none"><a href="rmi.html">RMI</a></li>
+		   
+		</ul>
+		<h2>Pluggable Design</h2>
+		<ul>
+		   		  <li class="none"><a href="streams.html">Streams</a></li>
+		    
+		  <li class="none"><strong>Transports</strong></li>
+  		  <li class="none"><a href="stubs.html">Stubs</a></li>
+		    		  <li class="none"><a href="monitors.html">Monitors</a></li>
+		    		  <li class="none"><a href="pingers.html">Pingers</a></li>
+		   
+		</ul>
+		<h2>Reports</h2>
+		<ul>
+		  
+		</ul>
+    </div>
+  </div>
+</td>
+<td class="cont">
+<img src="images/jremoting-logo.jpg" width="" height="" alt="" style="float: right" />
+<h1>Transports</h1>
+
+  <h3>Overview</h3>
+  <p>JRemoting has a number of 'transports' to
+  connect clients to servers. Some of the work over the internet,
+  some are for more local situations.
+
+  </p>
+  <h3>Socket Transport</h3>
+  <p>This will work over the internet or an
+    intranet, between two different machines. &nbsp;It will also work
+  between two different processes on the same machine.<br />
+</p>
+  <p><span style="font-weight: bold;">Server side usage</span> </p>
+<div class="source">
+    <pre>
+server = new <span style=
+"font-weight: bold;">SocketServer</span>(new ConsoleServerMonitor(), 
+                          new InetSocketAddress(portNum));
+</pre>
+</div>
+
+  <p style="font-weight: bold;">Client side usage</p>
+
+  <div class="source">
+    <pre>
+serviceResolver = new ServiceResolver(new <span style=
+"font-weight: bold;">SocketTransport</span>(new ConsoleClientMonitor(), 
+                                                          new SocketDetails("somehost.com", portNum)));
+</pre>
+  </div>
+
+  <h3>Secure Socket Transport</h3>
+  <p>As above, but using SSL.
+    &nbsp;You need to set the keyStore and/or trustStore for the VM
+    in question.<br />
+    <br />
+    <span style="font-weight: bold;">Server side usage</span>
+    
+  </p>
+  <div class="source">
+    <pre>
+Pass these to java as env vars:
+-Djavax.net.ssl.keyStore=/path/to/keyStore 
+-Djavax.net.ssl.keyStore=/path/to/trustStore 
+-Djavax.net.ssl.keyStorePassword=yourPassword
+
+server = new <span style=
+"font-weight: bold;">SSLSocketServer</span>(new ConsoleServerMonitor(), new InetSocketAddress(portNum));
+</pre>
+  </div>
+
+  <p style="font-weight: bold;">Client side usage</p>
+
+  <div class="source">
+    <pre>
+serviceResolver = new ServiceResolver(new <span style=
+"font-weight: bold;">SSLSocketTransport</span>(new ConsoleClientMonitor(), 
+                                                             new SocketDetails("somehost.com", portNum)));
+</pre>
+  </div>
+
+  <h3>Piped Transport</h3>
+  <p>Using Java's built-in pipes, this
+  transport will join two parts of the same application with RPC.
+  &nbsp;Interestingly you could have a large hierarchy of
+  clasloaders with the objects to be serialized duplicated in the
+  tree (once for client side, once for server side) and it would
+  work. Perhaps even if they were different versions of the same
+  jar. &nbsp;Pipes offers some natural threading to the two sides
+  of the application.<br />
+  <br />
+  <span style="font-weight: bold;">Usage</span>
+
+  </p>
+  <div class="source">
+    <pre>
+PipedServer server = new <span style=
+"font-weight: bold;">PipedServer</span>(new ConsoleServerMonitor(), new InetSocketAddress(portNum));
+
+PipedInputStream in = new PipedInputStream();
+PipedOutputStream out = new PipedOutputStream();
+server.makeNewConnection(in, out);
+
+serviceResolver = new ServiceResolver(new <span style=
+"font-weight: bold;">PipedTransport</span>(new ConsoleClientMonitor(), in, out));
+</pre>
+  </div>
+
+  <h3>Direct Transport</h3>
+  <p>Directly wiring a JRemoting server to a
+  client mostly serves as a quality/development consideration for
+  us. &nbsp;The transport is very fast as no serialization is
+  taking place. &nbsp;If you can find a use for it, you will note
+  that you can't have a complex classloader design for this.<br />
+  <br />
+  <span style="font-weight: bold;">Usage</span>
+
+  </p>
+  <div class="source">
+    <pre>
+server = new <span style=
+"font-weight: bold;">DirectServer</span>((ServerMonitor) mockServerMonitor.proxy());<br />
+serviceResolver = new ServiceResolver(new <span style=
+"font-weight: bold;">DirectTransport</span>(new ConsoleClientMonitor(), server));
+</pre>
+  </div>
+
+  <h3>Direct Transport - marshaled</h3>
+  <p>As above, but with a
+    deliberate serialize/deserialize step. &nbsp;Again of marginal
+    use for the end user compared to sockets/pipes. This one could
+    leverage a hierarchy of classloaders. Specifically, the things
+    that would be serialized and/or the facade in question could be
+    duplicated within the app, as long as they are are not in the
+    same branch of a classloader tree.<br />
+    <br />
+    <span style="font-weight: bold;">Usage</span>
+    
+  </p>
+  <div class="source">
+    <pre>
+server = new <span style=
+"font-weight: bold;">DirectMarshalledServer</span>((ServerMonitor) mockServerMonitor.proxy());
+serviceResolver = new ServiceResolver(new <span style=
+"font-weight: bold;">DirectMarshalledTransport</span>(new ConsoleClientMonitor(), server));
+</pre>
+  </div>
+
+  <h3>Over RMI</h3>
+  <p>This is just like the Socket based transports, except that it leverages classic RMI for the transport.<br />
+    <br />
+    <span style="font-weight: bold;">Server side usage</span>
+
+  </p>
+  <div class="source">
+    <pre>
+server = new <span style=
+"font-weight: bold;">RmiServer</span>(new ConsoleServerMonitor(), 
+                          new InetSocketAddress(portNum));
+</pre>
+  </div>
+
+  <p style="font-weight: bold;">Client side usage</p>
+  <div class="source">
+    <pre>
+serviceResolver = new ServiceResolver(new <span style=
+"font-weight: bold;">RmiTransport</span>(new ConsoleClientMonitor(), 
+                                                          new SocketDetails("somehost.com", portNum)));
+</pre>
+  </div>
+
+  <h3>Using Apache Mina for NIO on the server side</h3>
+  <p>This is just like the Socket based transports, except that it on the server 
+  side <a href="http://mina.apache.org/">Apache Mina</a> is used to leverage NIO. 
+  This does not have as fast throughput as plain sockets, it is just able to scale to more concurrent connections<br />
+  <br />
+  <span style="font-weight: bold;">Server side usage</span>
+
+  </p>
+  <div class="source">
+    <pre>
+server = new <span style=
+"font-weight: bold;">MinaServer</span>(new ConsoleServerMonitor(), 
+                          new InetSocketAddress(portNum));
+</pre>
+  </div>
+
+  <p style="font-weight: bold;">Client side usage</p>
+  <div class="source">
+    <pre>
+serviceResolver = new ServiceResolver(new <span style=
+"font-weight: bold;">SocketTransport</span>(new ConsoleClientMonitor(), 
+                                                          new SocketDetails("somehost.com", portNum)));
+</pre>
+  </div>
+
+
+  <h3>Servlets</h3>
+  <p>Todo
+
+  </p>
+  <h3>Comparative speeds</h3>
+  <p>On a single MacBook Pro (2.16Ghz
+  Core2Duo) with server and client on the same machine.<br />
+  <br />
+  <span style="font-weight: bold;">JRemoting
+Transports</span><br />
+</p>
+  <p>ByteStream or ObjectStream Piped types - 4,500 reqs/sec<br />
+  ByteStream or ObjectStream over Socket types (incl SSL) - 2,800 reqs/sec<br />
+  ByteStream or ObjectStream with Mina server - 2,100 reqs/sec<br />
+  XStream over Sockets - 1,800 reqs/sec<br />
+  Over classic RMI - 2,100 reqs/sec<br />
+
+  Direct - 120,482 reqs/sec<br />
+  Direct Marshalled - 6,906 reqs/sec<br />
+  <br />
+  <span style="font-weight: bold;">Non RPC</span> <strong>(for
+  comparison)<br style="font-weight: bold;" />
+</strong> </p>
+  <p>Dynamic
+  proxy - 7 million reqs/sec<br />
+  Hand-coded proxy - 109 million reqs/sec<br />
+  Directly wiring client to server (no proxy, no nothing) - 551
+  million reqs/sec<br />
+    </p>
+
+</td>
+</tr>
+</table>
+</body>
+</html>

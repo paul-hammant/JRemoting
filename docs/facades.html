@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<head>
+<title>JRemoting Facades</title>
+<style type="text/css">
+<!--
+.nav {
+	background-color: #EAEAEA;
+    vertical-align: top;
+	width: 80px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+.cont {
+	vertical-align: top;
+	width: 100%;
+	padding-left: 15px;
+}
+-->
+</style>
+</head>
+<body>
+<table>
+<tr>
+<td class="nav">
+  <div id="leftColumn">
+    <div id="navColumn">
+		<h2>About</h2>
+		<ul>
+		   		  <li class="none"><a href="index.html">Overview</a></li>
+		    		  <li class="none"><a href="news.html">News</a></li>
+		    		  <li class="none"><a href="team.html">Team</a></li>
+		    
+		  <li class="none"><strong>Facades</strong></li>
+  		  <li class="none"><a href="rmi.html">RMI</a></li>
+		   
+		</ul>
+		<h2>Pluggable Design</h2>
+		<ul>
+		   		  <li class="none"><a href="streams.html">Streams</a></li>
+		    		  <li class="none"><a href="transports.html">Transports</a></li>
+		    		  <li class="none"><a href="stubs.html">Stubs</a></li>
+		    		  <li class="none"><a href="monitors.html">Monitors</a></li>
+		    		  <li class="none"><a href="pingers.html">Pingers</a></li>
+		   
+		</ul>
+		<h2>Reports</h2>
+		<ul>
+		  
+		</ul>
+    </div>
+  </div>
+</td>
+<td class="cont">
+<img src="images/jremoting-logo.jpg" width="" height="" alt="" style="float: right" />
+<h1>Facades</h1>
+
+  <h3>Overview</h3>
+
+  <p>The <a href=
+  "http://en.wikipedia.org/wiki/Fa%E7ade_pattern">Facade
+  pattern</a> is what you should have in mind as you design an
+  interface for publishing over JRemoting. &nbsp;It goes
+  hand-in-hand with <a href=
+  "http://en.wikipedia.org/wiki/Immutable_object">Immutable
+  objects</a>. Understanding both is key to making JRemoting work
+  for you.</p>
+
+  <p>Facades have methods that are going to be invoked over the
+  wire. &nbsp;The results of those methods can either be immutable
+  (also known as value objects), or other (secondary) facades.
+  &nbsp;If the method returns a secondary facade, it could be the
+  interface declared on the return type or a more derived
+  interface. &nbsp;If an immutable it can be anything that is
+  serializable, but cannot have a reference to anything that's a
+  facade.</p>
+
+  <h2 style="font-weight: bold;">Sample Facades and Immutables
+  (Value Objects)</h2>
+<div class="source">
+    <pre>
+interface Bank {
+    Account findAccount(int accountID)
+}
+
+interface Account {
+    Debit debitFunds(Amount amount, Account toAccount) throws UnsufficientFundsException
+    Credit creditFunds(Amount amount, Account fromAccount)
+}
+
+interface SavingsAccount extends Account {
+    Rate getInterestRate()
+}
+
+interface CheckingAccount extends Account {
+    Amount getOverdraftLimit()
+    void setupAutoTransfer(Amount maxBalance, Account destinationForSurplass)
+}
+
+
+class Txn implements Serializable {
+    private Amount amount;
+    private Date date;
+    private String ref;
+    public Amount getAmount() { .... }
+    public Date getDate() { .... }
+    public String getReference() { .... }
+}
+
+class Debit extends Txn {
+    private int toAccountID;
+    public int getToAccount() { .... }
+}
+
+class Credit extends Txn {
+    private int fromAccountID;
+    public int getFromAccount() { .... }
+}
+
+class Amount implements Serializable {
+    private BigDecimal value;
+    public BigDecimal  getValue() { .... }
+}
+
+</pre>
+  </div>
+
+  <p>The interface Bank above is the one that is the primary
+  facade. &nbsp;SavingsAccount and CheckingAccount are the
+  secondary facade. &nbsp;They are used as return types and
+  parameters to methods on the primary facade and each other. The
+  plain classes Txn, Debit, Credit and Amount are plain classes
+  that are serializable. Date and BigDecimal are from Java's
+  libraries and are Serializable out of the box. Note that Credit
+  and Debit have a corresponding account ID rather than a reference
+  to the Account itself.</p>
+
+  <p>Note also that the debitFunds method on the primary facade has
+  an exception. &nbsp;That exception is plain (it does not extend
+  anything special from the JRemoting API) and is replicated on the
+  client side by JRemoting. &nbsp;The same would be true of
+exceptions that are drived from RuntimeException.</p>
+  <p>With primary and secondary facades, you have to specify both on the server side. The primary one is the one you resolve over the wire, the secondary ones are activated during operation. Like primary facades, the secondary ones are eligible for garbage collection.</p>
+  <h3>Publishing</h3>
+
+  <div class="source">
+    <pre>
+    Bank myBank = new BankImpl();
+    server = new SocketServer(new ConsoleServerMonitor(), new InetSocketAddress(10333));
+    server.publish(myBank, "BankService", Bank.class, 
+                   SavingsAccount.class, CheckingAccount.class); // secondary facades are varargs
+    server.start();
+  
+</pre>
+</div>
+
+  <h3>Client side usage</h3>
+
+  <div class="source">
+    <pre>
+    serviceResolver = new ServiceResolver(new SocketTransport(new ConsoleClientMonitor(), new SocketDetails("localhost", 10333)));<br />
+    Bank remoteBank = serviceResolver.resolveService("BankService");
+    
+</pre>
+  </div>
+  
+
+</td>
+</tr>
+</table>
+</body>
+</html>

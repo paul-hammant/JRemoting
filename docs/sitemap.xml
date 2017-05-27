@@ -1,0 +1,22 @@
+<sitemap>
+    <section>
+        <name>About</name>
+        <page>index.html</page>
+        <page>news.html</page>
+        <page>team.html</page>
+        <page>facades.html</page>
+        <page>rmi.html</page>
+    </section>
+	<section>
+        <name>Pluggable Design</name>
+        <page>streams.html</page>
+        <page>transports.html</page>
+        <page>stubs.html</page>
+        <page>monitors.html</page>
+        <page>pingers.html</page>
+    </section>
+	<section>
+        <name>Reports</name>
+        <link title="Maven Reports">http://jremoting.codehaus.org/maven/</link>
+    </section>
+</sitemap>

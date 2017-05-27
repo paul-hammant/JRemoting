@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<head>
+<title>JRemoting RMI</title>
+<style type="text/css">
+<!--
+.nav {
+	background-color: #EAEAEA;
+    vertical-align: top;
+	width: 80px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+.cont {
+	vertical-align: top;
+	width: 100%;
+	padding-left: 15px;
+}
+-->
+</style>
+</head>
+<body>
+<table>
+<tr>
+<td class="nav">
+  <div id="leftColumn">
+    <div id="navColumn">
+		<h2>About</h2>
+		<ul>
+		   		  <li class="none"><a href="index.html">Overview</a></li>
+		    		  <li class="none"><a href="news.html">News</a></li>
+		    		  <li class="none"><a href="team.html">Team</a></li>
+		    		  <li class="none"><a href="facades.html">Facades</a></li>
+		    
+		  <li class="none"><strong>RMI</strong></li>
+ 
+		</ul>
+		<h2>Pluggable Design</h2>
+		<ul>
+		   		  <li class="none"><a href="streams.html">Streams</a></li>
+		    		  <li class="none"><a href="transports.html">Transports</a></li>
+		    		  <li class="none"><a href="stubs.html">Stubs</a></li>
+		    		  <li class="none"><a href="monitors.html">Monitors</a></li>
+		    		  <li class="none"><a href="pingers.html">Pingers</a></li>
+		   
+		</ul>
+		<h2>Reports</h2>
+		<ul>
+		  
+		</ul>
+    </div>
+  </div>
+</td>
+<td class="cont">
+<img src="images/jremoting-logo.jpg" width="" height="" alt="" style="float: right" />
+<h1>RMI</h1>
+
+  <p>It is our view that RMI sucks. Admittedly it sucks less in
+  2008 than it did ten years ago, but it is still preoccupied on
+  forcing end users to be aware of the <a href=
+  "http://blogs.sun.com/jag/resource/Fallacies.html">eight
+  fallacies of distributed computing</a>, for every invocation.
+  From the outset, these are the issues that are/were annoying about RMI :</p>
+
+  <ul>
+    <li><s>RMI forces you to extend 'UnicastRemoteObject'</s>
+    -fixed in latter JDKs</li>
+
+    <li>RMI forces you to catch a checked exception -
+    'RemoteException' - wherever methods are called.</li>
+
+    <li>RMI forces interfaces to implement 'Remote'</li>
+
+    <li><s>Cumbersome RMI stub compiler</s> - fixed in latter
+    JDKs</li>
+
+    <li>Static, though optional, RMI registry</li>
+  </ul>
+
+  <p>A developer coding for a remote divide should do so in a way
+  that respects the <a href="facades.html">Facade Pattern</a> but
+  should be able to leave outage concerns to more centralized
+  places.</p>
+
+  <p>Centralized places could be, a handler servlet (through which
+  all requests go), or a container such as Spring, PicoContainer or
+  Guice (we all adhere to Inversion of Control these days
+  right?).</p>
+
+</td>
+</tr>
+</table>
+</body>
+</html>

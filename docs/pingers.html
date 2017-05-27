@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<head>
+<title>JRemoting Pingers</title>
+<style type="text/css">
+<!--
+.nav {
+	background-color: #EAEAEA;
+    vertical-align: top;
+	width: 80px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+.cont {
+	vertical-align: top;
+	width: 100%;
+	padding-left: 15px;
+}
+-->
+</style>
+</head>
+<body>
+<table>
+<tr>
+<td class="nav">
+  <div id="leftColumn">
+    <div id="navColumn">
+		<h2>About</h2>
+		<ul>
+		   		  <li class="none"><a href="index.html">Overview</a></li>
+		    		  <li class="none"><a href="news.html">News</a></li>
+		    		  <li class="none"><a href="team.html">Team</a></li>
+		    		  <li class="none"><a href="facades.html">Facades</a></li>
+		    		  <li class="none"><a href="rmi.html">RMI</a></li>
+		   
+		</ul>
+		<h2>Pluggable Design</h2>
+		<ul>
+		   		  <li class="none"><a href="streams.html">Streams</a></li>
+		    		  <li class="none"><a href="transports.html">Transports</a></li>
+		    		  <li class="none"><a href="stubs.html">Stubs</a></li>
+		    		  <li class="none"><a href="monitors.html">Monitors</a></li>
+		    
+		  <li class="none"><strong>Pingers</strong></li>
+ 
+		</ul>
+		<h2>Reports</h2>
+		<ul>
+		  
+		</ul>
+    </div>
+  </div>
+</td>
+<td class="cont">
+<img src="images/jremoting-logo.jpg" width="" height="" alt="" style="float: right" />
+<h1>Pingers</h1>
+
+  <p>A ConnectionPinger is a mechanism by which the Client keeps a
+  connection alive to a server. This will prevent the server from
+  marking references eligible for garbage collection.</p>
+
+  <h3>TimingOutPinger</h3>
+
+  <p>This will ping every X seconds and will give up pinging after
+  Y seconds beyond the last real request.</p>
+
+  <h3>NeverConnectionPinger</h3>
+
+  <p>This does not ping at all.</p>
+
+  <h3>PerpetualPinger</h3>
+
+  <p>This one keeps going regardless.</p>
+
+</td>
+</tr>
+</table>
+</body>
+</html>

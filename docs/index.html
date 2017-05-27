@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<head>
+<title>JRemoting Overview</title>
+<style type="text/css">
+<!--
+.nav {
+	background-color: #EAEAEA;
+    vertical-align: top;
+	width: 80px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+.cont {
+	vertical-align: top;
+	width: 100%;
+	padding-left: 15px;
+}
+-->
+</style>
+</head>
+<body>
+<table>
+<tr>
+<td class="nav">
+  <div id="leftColumn">
+    <div id="navColumn">
+		<h2>About</h2>
+		<ul>
+		   
+		  <li class="none"><strong>Overview</strong></li>
+  		  <li class="none"><a href="news.html">News</a></li>
+		    		  <li class="none"><a href="team.html">Team</a></li>
+		    		  <li class="none"><a href="facades.html">Facades</a></li>
+		    		  <li class="none"><a href="rmi.html">RMI</a></li>
+		   
+		</ul>
+		<h2>Pluggable Design</h2>
+		<ul>
+		   		  <li class="none"><a href="streams.html">Streams</a></li>
+		    		  <li class="none"><a href="transports.html">Transports</a></li>
+		    		  <li class="none"><a href="stubs.html">Stubs</a></li>
+		    		  <li class="none"><a href="monitors.html">Monitors</a></li>
+		    		  <li class="none"><a href="pingers.html">Pingers</a></li>
+		   
+		</ul>
+		<h2>Reports</h2>
+		<ul>
+		  
+		</ul>
+    </div>
+  </div>
+</td>
+<td class="cont">
+<img src="images/jremoting-logo.jpg" width="" height="" alt="" style="float: right" />
+<h1>Overview</h1>
+
+  <p>It is a transparent RPC (remoting) technology for Java.
+  &nbsp;You can publish an object to one or more remote clients via
+  one of the interfaces it implements. &nbsp;It is best to honor
+  the Facade Pattern while architecting the interface(s) as an RPC
+  call over TCP/IP is not cheap.</p>
+
+  <p>JRemoting is Apache 2.0 licensed open source. It is inspired by .Net Remoting and before that the no-longer available Mind Electric Glue technology. JRemoting has been in development since 2002 and for no good reason was not released as 1.0 until 2008. The 2002 project was AltRMI at Apache, thus the copyright is in part Apache Software Foundation and in part the JRemoting committers</p>
+
+  <p>Here is an example of a simple facade-style interface and a
+  POJO implementation of it:</p>
+
+  <div class="source">
+    <pre>
+    public interface Bank {
+        void credit(BigDecimal amount);
+        void debit(BigDecimal amount);
+    }
+
+    public BankImpl implements Bank {
+        // fields
+        public void credit(BigDecimal amount) {
+            // etc
+        }
+        public void debit(BigDecimal amount) {
+            // etc
+        }
+        // other methods
+    }
+    
+</pre>
+  </div>
+
+  <h3>Server side publishing</h3>
+
+  <div class="source">
+    <pre>
+    Bank myBank = new BankImpl();
+    server = new SocketServer(new ConsoleServerMonitor(), new InetSocketAddress(10333));
+    server.publish(myBank, "BankService", Bank.class);
+    server.start();
+  
+</pre>
+  </div>
+
+  <h3>Client side usage</h3>
+
+  <div class="source">
+    <pre>
+    serviceResolver = new ServiceResolver(new SocketTransport(new ConsoleClientMonitor(), new SocketDetails("localhost", 10333)));<br />
+    Bank remoteBank = serviceResolver.resolveService("BankService");
+    
+</pre>
+  </div>
+
+  <h3>Pluggability</h3>
+
+  <p>JRemoting is designed to have pluggable implementations of its
+  component parts. Explore the left navigation to see what is
+  pluggable.</p>
+
+</td>
+</tr>
+</table>
+</body>
+</html>

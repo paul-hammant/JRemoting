@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+<head>
+<title>JRemoting Monitors</title>
+<style type="text/css">
+<!--
+.nav {
+	background-color: #EAEAEA;
+    vertical-align: top;
+	width: 80px;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+.cont {
+	vertical-align: top;
+	width: 100%;
+	padding-left: 15px;
+}
+-->
+</style>
+</head>
+<body>
+<table>
+<tr>
+<td class="nav">
+  <div id="leftColumn">
+    <div id="navColumn">
+		<h2>About</h2>
+		<ul>
+		   		  <li class="none"><a href="index.html">Overview</a></li>
+		    		  <li class="none"><a href="news.html">News</a></li>
+		    		  <li class="none"><a href="team.html">Team</a></li>
+		    		  <li class="none"><a href="facades.html">Facades</a></li>
+		    		  <li class="none"><a href="rmi.html">RMI</a></li>
+		   
+		</ul>
+		<h2>Pluggable Design</h2>
+		<ul>
+		   		  <li class="none"><a href="streams.html">Streams</a></li>
+		    		  <li class="none"><a href="transports.html">Transports</a></li>
+		    		  <li class="none"><a href="stubs.html">Stubs</a></li>
+		    
+		  <li class="none"><strong>Monitors</strong></li>
+  		  <li class="none"><a href="pingers.html">Pingers</a></li>
+		   
+		</ul>
+		<h2>Reports</h2>
+		<ul>
+		  
+		</ul>
+    </div>
+  </div>
+</td>
+<td class="cont">
+<img src="images/jremoting-logo.jpg" width="" height="" alt="" style="float: right" />
+<h1>Monitors</h1>
+
+  <p>A Monitor is a mechanism by which the Server or client side
+  user can tap into events that are happening during RPC. A use is
+  logging, but another concerns <a href="#robustness">Connection
+  Rubstness</a>.</p>
+
+  <h2>Server Side</h2>
+
+  <div class="source">
+    <p>On the serverside you implement a interface called
+    ServerMonitor:</p>
+    <pre>
+    void closeError(Class clazz, String desc, IOException e);
+
+    void classNotFound(Class clazz, ClassNotFoundException e);
+
+    void unexpectedException(Class clazz, String desc, Throwable e);
+
+    void stopServerError(Class clazz, String desc, Exception e);
+
+    void newSession(Session session, int newSize, String connectionDetails);
+
+    void removeSession(Session session, int newSize);
+
+    void staleSession(Session session, int newSize);
+        
+</pre>
+  </div>
+
+  <p>Pre-made implementations are CommonsLoggingServerMonitor,
+  JavaLoggingServerMonitor, Log4JServerMonitor and
+  NullServerMonitor. It is specified as the first parameter in the
+  applicable Server class.</p>
+
+  <h2>Client Side</h2>
+
+  <div class="source">
+    <p>On the client side you implement a interface called
+    ClientMonitor:</p>
+    <pre>
+    void methodCalled(Class clazz, String methodSignature, 
+                      long duration, String annotation);
+
+    boolean methodLogging();
+
+    void serviceSuspended(Class clazz, Request request, int attempt, 
+                          int suggestedWaitMillis);
+
+    void serviceAbend(Class clazz, int attempt, IOException cause);
+
+    void invocationFailure(Class clazz, String publishedServiceName, 
+                           String objectName, String methodSignature, 
+                           InvocationException ie);
+
+    void unexpectedConnectionClosed(Class clazz, String name, 
+                                    ConnectionClosedException cce);
+
+    void unexpectedInterruption(Class clazz, String name, 
+                                InterruptedException ie);
+
+    void classNotFound(Class clazz, String msg, 
+                       ClassNotFoundException cnfe);
+
+    void unexpectedIOException(Class clazz, String msg, 
+                               IOException ioe);
+
+    void pingFailure(Class clazz, JRemotingException jre);
+
+        
+</pre>
+  </div>
+
+  <p>Pre-made implementations are CommonsLoggingClientMonitor,
+  JavaLoggingClientMonitor, Log4JClientMonitor,
+  SimpleRetryingClientMonitor and NullClientMonitor. It is
+  specified as the first parameter in the applicable Transport
+  class.</p>
+
+  <h2><a name="robustness" id="robustness"></a>Connection
+  Robustness</h2>
+
+  <p>The Client Monitor has a mechanism to participate in the
+  robustness of the connection. Connections are dropped and this
+  provides a way for the user to decide how connections are
+  recovered. By default failing connections will be reported by way
+  of InvocationException (a derivative of RuntimeException)
+  immediately. By chaining the client monitor of your choice to
+  another called SimpleRetryingClientMonitor you'll be able to
+  control the attempt to reconnect/retry.</p>
+
+  <div class="source">
+    <pre>
+serviceResolver = new ServiceResolver(new SocketTransport(
+                          new ConsoleClientMonitor(<strong>new SimpleRetryingClientMonitor(100)</strong>), 
+                                                    new SocketDetails("localhost", 10333)));<br />
+</pre>
+  </div>
+
+  <p>In the above case we specified 100 retries, and the policy for
+  SimpleRetryingClientMonitor is to retry progressively but with an
+  increasing delay between retries (2 to the power of the retry #
+  multiplied by 500 millies). Override method
+  calculateDelayMillis(attempt) if you want to change that.</p>
+
+  <p>&nbsp;</p>
+
+</td>
+</tr>
+</table>
+</body>
+</html>
